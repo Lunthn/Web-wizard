@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --ant-primary-color: #1890ff;
+  --background-color: #fafbfc;
+  --card-bg: #fff;
+  --border-color: #e5e6e8;
+  --text-color: #222;
+  --secondary-text-color: #888;
+}
+
+* {
+  font-family: "Montserrat", sans-serif !important;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100%;
+  width: 450px;
+  margin: 0;
+  background: var(--background-color);
+  color: var(--text-color);
+  border: none !important;
+  outline: none !important;
+}
+
+#app {
+  height: 100%;
+}
+
+.loading-container {
+  padding: 20px;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.ant-card {
+  border: 1px solid var(--border-color) !important;
+  background: var(--card-bg) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.ant-btn {
+  font-family: "Montserrat", sans-serif !important;
+  border-radius: 6px !important;
+}
+
+.ant-typography {
+  color: var(--text-color) !important;
+}
+
+.ant-typography-secondary {
+  color: var(--secondary-text-color) !important;
+}
+
+.ant-tabs {
+  background: transparent;
+}
+
+.ant-tabs-tab {
+  font-weight: 500;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d1d1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.dark-mode {
+  --ant-primary-color: #1890ff;
+  --background-color: #181818;
+  --card-bg: #232323;
+  --border-color: #232323;
+  --text-color: #f0f0f0;
+  --secondary-text-color: #a0a0a0;
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+.dark-mode .ant-tabs {
+  background-color: var(--background-color);
+}
+
+.dark-mode .ant-card {
+  border: 1px solid var(--border-color) !important;
+  background-color: var(--card-bg) !important;
+}
+
+.dark-mode .ant-btn {
+  color: var(--text-color) !important;
+}
+
+.dark-mode .ant-typography {
+  color: var(--text-color) !important;
+}
+
+.dark-mode .ant-typography-secondary {
+  color: var(--secondary-text-color) !important;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background-color: #444;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background-color: transparent;
+}
