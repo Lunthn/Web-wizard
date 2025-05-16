@@ -24,6 +24,11 @@ export const MANIFEST_DATA = {
     "48": "icon-48.png",
     "128": "icon-128.png",
   },
+  browser_specific_settings: {
+    gecko: {
+      id: "{f29d84e2-1b4c-4e9d-bd4e-7d2f1c3e1a9f}",
+    },
+  },
 };
 
 export const SOCIAL_LINKS = {
