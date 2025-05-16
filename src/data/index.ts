@@ -28,7 +28,7 @@ export const MANIFEST_DATA = {
 
 export const SOCIAL_LINKS = {
   GITHUB_PROFILE: "https://github.com/lunthn",
-  GITHUB_REPO: "https://github.com/lunthn/web-tools",
+  GITHUB_REPO: "https://github.com/lunthn/web-wizard",
   MAIL: "nr.lupke@gmail.com",
   LINKEDIN: "https://linkedin.com/in/nathanlupke",
   COFFE: "https://buymeacoffee.com/lunthn",
