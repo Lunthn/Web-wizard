@@ -3,7 +3,7 @@ export const MANIFEST_DATA = {
   name: "Web Wizard",
   version: "1.0",
   description:
-    "Analyze website designs - instantly reveal color palettes and typography choices with a single click. Perfect for designers and developers.",
+    "Analyze website designs - instantly reveal color palettes and typography choices with a single click.",
   action: {
     default_popup: "index.html",
   },

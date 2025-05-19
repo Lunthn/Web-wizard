@@ -24,10 +24,9 @@
 - #️⃣ &nbsp;**Count of colors and percentage of fonts**, _Get statistics on color usage and font distribution._
 
 ## Screenshots
-![Screenshot](screenshots/colors-dark.png)
-![Screenshot](screenshots/colors-light.png)
-![Screenshot](screenshots/fonts-dark.png)
-![Screenshot](screenshots/settings-dark.png)
+![Screenshot](screenshots/colors-preview.png)
+![Screenshot](screenshots/fonts-preview.png)
+![Screenshot](screenshots/settings-preview.png)
 
 
 
