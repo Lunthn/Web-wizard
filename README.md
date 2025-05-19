@@ -1,4 +1,4 @@
-<img src="public/icon-48.png" >
+<img src="public/icon-128.png" width="48" >
 
 # Web Wizard
 
@@ -44,7 +44,7 @@
    ```
 4. Open your browser's extensions page (e.g., `chrome://extensions/`).
 5. Enable "Developer mode".
-6. Click "Load unpacked" and select the `web-tools/dist` directory.
+6. Click "Load unpacked" and select the `/dist` directory.
 
 ## Support
 
