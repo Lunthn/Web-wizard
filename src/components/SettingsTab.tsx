@@ -75,6 +75,8 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
     );
   };
 
+ 
+
   const handleResetSettings = () => {
     restoreDefaults();
     setSelectedFormat(DEFAULTS.FORMAT);
@@ -157,6 +159,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
       <Switch checked={hideNotes} onChange={handleHideNotesToggle} />
     </Space>
   );
+
 
   const Footer = () => (
     <Space

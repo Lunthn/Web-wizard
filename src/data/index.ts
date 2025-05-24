@@ -1,7 +1,7 @@
 export const MANIFEST_DATA = {
   manifest_version: 3,
   name: "Web Wizard",
-  version: "1.0",
+  version: "1.1",
   description:
     "Analyze website designs - instantly reveal color palettes and typography choices with a single click.",
   action: {

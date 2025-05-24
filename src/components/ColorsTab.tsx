@@ -7,7 +7,12 @@ import {
   DEFAULTS,
 } from "../services/storageService";
 import { rgbToHex, rgbToHsl } from "../utils";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  UpOutlined,
+  DownOutlined,
+} from "@ant-design/icons";
 import { FaHighlighter } from "react-icons/fa6";
 import { IoCopy } from "react-icons/io5";
 
@@ -28,6 +33,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
   const [highlightedColor, setHighlightedColor] = useState<string | null>(null);
   const [format, setFormat] = useState<string>(DEFAULTS.FORMAT);
   const [hideNotes, setHideNotesState] = useState<boolean>(false);
+  const [elementsOpen, setElementsOpen] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     getFormat().then((savedFormat: string) => {
@@ -36,6 +42,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
     getHideNotes().then((savedHideNotes) => {
       setHideNotesState(savedHideNotes ?? false);
     });
+
     const handleStorageChange = (event: StorageEvent) => {
       if (event.key === "hideNotes") {
         getHideNotes().then((savedHideNotes) => {
@@ -43,9 +50,22 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
         });
       }
     };
+
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  useEffect(() => {
+    setElementsOpen((prev) => {
+      const newState: Record<number, boolean> = { ...prev };
+      colorData.forEach((_, idx) => {
+        if (prev[idx] === undefined) {
+          newState[idx] = false; // Always start hidden
+        }
+      });
+      return newState;
+    });
+  }, [colorData]);
 
   const formatColor = (rgb: string): string => {
     switch (format) {
@@ -87,8 +107,17 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
     });
   };
 
+  const toggleElements = (index: number) => {
+    setElementsOpen((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
   const renderColorCard = (color: ColorItem, index: number) => {
     const formattedColor = formatColor(color.color);
+    const showElements = elementsOpen[index];
+
     return (
       <Card
         key={index}
@@ -185,17 +214,29 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
             </div>
           </div>
           <div>
-            <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
-              Elements:
-            </Text>
-            <Space size={[0, 4]} wrap style={{ marginTop: 4 }}>
-              {color.elements &&
-                color.elements.map((element, i) => (
+            <Space style={{ display: "flex", justifyContent: "space-between" }}>
+              <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
+                Elements:
+              </Text>
+              <Button
+                size="small"
+                type="link"
+                style={{ padding: 0, marginLeft: 4 }}
+                onClick={() => toggleElements(index)}
+                aria-label={showElements ? "Hide elements" : "Show elements"}
+              >
+                {showElements ? <DownOutlined /> : <UpOutlined />}
+              </Button>
+            </Space>
+            {showElements && (
+              <Space size={[0, 4]} wrap style={{ marginTop: 4 }}>
+                {color.elements?.map((element, i) => (
                   <Tag key={i} color="default">
                     {element}
                   </Tag>
                 ))}
-            </Space>
+              </Space>
+            )}
           </div>
         </div>
       </Card>
