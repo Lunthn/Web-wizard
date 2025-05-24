@@ -49,6 +49,11 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
           setHideNotesState(savedHideNotes ?? false);
         });
       }
+      if (event.key === "format") {
+        getFormat().then((savedFormat: string) => {
+          setFormat(savedFormat || DEFAULTS.FORMAT);
+        });
+      }
     };
 
     window.addEventListener("storage", handleStorageChange);
