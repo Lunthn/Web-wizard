@@ -30,7 +30,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
   );
   const [hideNotes, setHideNotesState] = useState<boolean>(DEFAULTS.HIDE_NOTES);
 
-  // Load saved settings on mount
   useEffect(() => {
     getFormat().then((savedFormat) =>
       setSelectedFormat(savedFormat || DEFAULTS.FORMAT)
@@ -41,7 +40,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
     getHideNotes().then((saved) => setHideNotesState(saved ?? DEFAULTS.HIDE_NOTES));
   }, []);
 
-  // Handlers
   const handleDarkModeToggle = (checked: boolean) => {
     setDarkMode(checked);
     setTheme(checked ? "dark" : "light");

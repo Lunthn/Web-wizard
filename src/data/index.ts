@@ -10,6 +10,9 @@ export const MANIFEST_DATA = {
   author: "Nathan Lupke",
   permissions: ["activeTab", "scripting"],
   host_permissions: ["<all_urls>"],
+  background: {
+    service_worker: "background.js",
+  },
   content_scripts: [
     {
       matches: ["http://*/*", "https://*/*"],
@@ -42,6 +45,6 @@ export const SOCIAL_LINKS = {
 export const DEFAULT_SETTINGS = {
   THEME: "dark" as "dark" | "light",
   FORMAT: "rgb",
-  HIGHLIGHT_COLOR: "#FFFF00",
+  HIGHLIGHT_COLOR: "#FF00FF",
   HIDE_NOTES: false,
 };

@@ -16,6 +16,7 @@ import FontsTab from "./components/FontsTab";
 import SettingsTab from "./components/SettingsTab";
 import { getTheme } from "./services/storageService";
 import { MANIFEST_DATA } from "./data/index";
+
 type TabData = {
   colors: { color: string; name: string; count: number }[];
   fonts: {
@@ -33,6 +34,8 @@ type TabData = {
 const { Title, Text } = Typography;
 const { defaultAlgorithm, darkAlgorithm } = theme;
 
+let backgroundPort: any = null;
+
 const Popup = () => {
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -43,6 +46,25 @@ const Popup = () => {
     title: "",
   });
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      backgroundPort = chrome.runtime.connect({ name: "popup" });
+
+      backgroundPort.onDisconnect.addListener(() => {
+        backgroundPort = null;
+      });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    return () => {
+      if (backgroundPort) {
+        backgroundPort.disconnect();
+        backgroundPort = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     getTheme()
@@ -93,7 +115,7 @@ const Popup = () => {
         files: ["content.js"],
       });
     } catch (err) {
-      console.error("Error injecting content script:", err);
+      console.error("error:", err);
     }
   };
 
@@ -111,7 +133,7 @@ const Popup = () => {
         console.warn(`Attempt ${retries + 1} failed:`, err);
         retries++;
         if (retries >= maxRetries)
-          throw new Error("Could not communicate with the page");
+          throw new Error("could not communicate with the page");
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }

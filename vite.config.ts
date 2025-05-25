@@ -55,6 +55,10 @@ export default defineConfig({
           src: "src/scripts/content.js",
           dest: "",
         },
+        {
+          src: "src/scripts/background.js",
+          dest: "",
+        },
       ],
     }),
   ],

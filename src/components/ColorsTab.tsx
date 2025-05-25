@@ -34,6 +34,8 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
   const [format, setFormat] = useState<string>(DEFAULTS.FORMAT);
   const [hideNotes, setHideNotesState] = useState<boolean>(DEFAULTS.HIDE_NOTES);
   const [elementsOpen, setElementsOpen] = useState<Record<number, boolean>>({});
+  const [highlightButtonColor, setHighlightButtonColor] =
+    useState<string>("transparent");
 
   useEffect(() => {
     getFormat().then((savedFormat: string) => {
@@ -41,6 +43,9 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
     });
     getHideNotes().then((savedHideNotes) => {
       setHideNotesState(savedHideNotes ?? DEFAULTS.HIDE_NOTES);
+    });
+    getHighlightColor().then((color) => {
+      setHighlightButtonColor(color || "transparent");
     });
 
     const handleStorageChange = (event: StorageEvent) => {
@@ -52,6 +57,11 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
       if (event.key === "format" || event.key === "resetSettings") {
         getFormat().then((savedFormat: string) => {
           setFormat(savedFormat || DEFAULTS.FORMAT);
+        });
+      }
+      if (event.key === "highlightColor" || event.key === "resetSettings") {
+        getHighlightColor().then((color) => {
+          setHighlightButtonColor(color || DEFAULTS.HIGHLIGHT_COLOR);
         });
       }
     };
@@ -205,6 +215,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
                         padding: "6px 12px",
                         outline: "none",
                         boxShadow: "none",
+                        borderRight: `2px solid ${highlightButtonColor}`,
                       }}
                       type="default"
                       onClick={() => {
