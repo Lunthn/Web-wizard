@@ -1,6 +1,6 @@
 import { Card, Typography, Tag, Space, Button } from "antd";
 import React, { useState, useEffect } from "react";
-import { DownOutlined, UpOutlined } from "@ant-design/icons";
+import { DownOutlined, LeftOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
 
@@ -44,7 +44,7 @@ const FontDetails: React.FC<{
             : `Show ${label.toLowerCase()}`
         }
       >
-        {isVisible ? <DownOutlined /> : <UpOutlined />}
+        {isVisible ? <DownOutlined /> : <LeftOutlined />}
       </Button>
     </Space>
     {isVisible && (

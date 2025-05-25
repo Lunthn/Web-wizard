@@ -10,7 +10,7 @@ import { rgbToHex, rgbToHsl } from "../utils";
 import {
   CheckOutlined,
   CloseOutlined,
-  UpOutlined,
+  LeftOutlined,
   DownOutlined,
 } from "@ant-design/icons";
 import { FaHighlighter } from "react-icons/fa6";
@@ -32,7 +32,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
   const [highlightedColor, setHighlightedColor] = useState<string | null>(null);
   const [format, setFormat] = useState<string>(DEFAULTS.FORMAT);
-  const [hideNotes, setHideNotesState] = useState<boolean>(false);
+  const [hideNotes, setHideNotesState] = useState<boolean>(DEFAULTS.HIDE_NOTES);
   const [elementsOpen, setElementsOpen] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
@@ -40,16 +40,16 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
       setFormat(savedFormat || DEFAULTS.FORMAT);
     });
     getHideNotes().then((savedHideNotes) => {
-      setHideNotesState(savedHideNotes ?? false);
+      setHideNotesState(savedHideNotes ?? DEFAULTS.HIDE_NOTES);
     });
 
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "hideNotes") {
+      if (event.key === "hideNotes" || event.key === "resetSettings") {
         getHideNotes().then((savedHideNotes) => {
-          setHideNotesState(savedHideNotes ?? false);
+          setHideNotesState(savedHideNotes ?? DEFAULTS.HIDE_NOTES);
         });
       }
-      if (event.key === "format") {
+      if (event.key === "format" || event.key === "resetSettings") {
         getFormat().then((savedFormat: string) => {
           setFormat(savedFormat || DEFAULTS.FORMAT);
         });
@@ -65,7 +65,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
       const newState: Record<number, boolean> = { ...prev };
       colorData.forEach((_, idx) => {
         if (prev[idx] === undefined) {
-          newState[idx] = false; // Always start hidden
+          newState[idx] = false;
         }
       });
       return newState;
@@ -230,7 +230,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
                 onClick={() => toggleElements(index)}
                 aria-label={showElements ? "Hide elements" : "Show elements"}
               >
-                {showElements ? <DownOutlined /> : <UpOutlined />}
+                {showElements ? <DownOutlined /> : <LeftOutlined />}
               </Button>
             </Space>
             {showElements && (
