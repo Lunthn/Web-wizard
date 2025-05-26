@@ -1,6 +1,10 @@
 import { Card, Typography, Tag, Space, Button } from "antd";
 import React, { useState, useEffect } from "react";
-import { DownOutlined, LeftOutlined } from "@ant-design/icons";
+import { CloseOutlined, DownOutlined, LeftOutlined } from "@ant-design/icons";
+import { getHighlightColor } from "../services/storageService";
+import { DEFAULTS } from "../services/storageService";
+import { Tooltip } from "antd";
+import { FaHighlighter } from "react-icons/fa6";
 
 const { Text } = Typography;
 
@@ -15,6 +19,27 @@ interface FontItem {
 interface FontsTabProps {
   fontData: FontItem[];
 }
+
+const highlightFont = async (font: string) => {
+  const storedHighlightColor = await getHighlightColor();
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]?.id) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: "highlightFont",
+        font,
+        highlightColor: storedHighlightColor || DEFAULTS.HIGHLIGHT_COLOR,
+      });
+    }
+  });
+};
+
+const removeHighlight = () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]?.id) {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "removeHighlight" });
+    }
+  });
+};
 
 const FontDetails: React.FC<{
   label: string;
@@ -60,9 +85,31 @@ const FontDetails: React.FC<{
 );
 
 const FontsTab: React.FC<FontsTabProps> = ({ fontData }) => {
+  const [highlightButtonColor, setHighlightButtonColor] =
+    useState<string>("transparent");
+  const [highlightedFont, setHighlightedFont] = useState<string | null>(null);
   const [elementsOpen, setElementsOpen] = useState<
     Record<number, { weights: boolean; sizes: boolean; elements: boolean }>
   >({});
+
+  useEffect(() => {
+    getHighlightColor().then((color) => {
+      setHighlightButtonColor(color || "transparent");
+    });
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === "highlightColor" || event.key === "resetSettings") {
+        getHighlightColor().then((color) => {
+          setHighlightButtonColor(color || DEFAULTS.HIGHLIGHT_COLOR);
+        });
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
 
   useEffect(() => {
     setElementsOpen((prev) => {
@@ -106,41 +153,81 @@ const FontsTab: React.FC<FontsTabProps> = ({ fontData }) => {
             }}
             bodyStyle={{ padding: 12 }}
           >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 4,
-                  }}
-                >
-                  <Text strong style={{ fontSize: "18px" }}>
-                    {font.name}
-                  </Text>
-                  <Text type="secondary">{font.usage}</Text>
-                </div>
-                <FontDetails
-                  label="Weights"
-                  items={font.weight}
-                  isVisible={elementsOpen[index]?.weights || false}
-                  onToggle={() => toggleSection(index, "weights")}
-                />
-                <FontDetails
-                  label="Sizes"
-                  items={font.sizes}
-                  isVisible={elementsOpen[index]?.sizes || false}
-                  onToggle={() => toggleSection(index, "sizes")}
-                />
-                <FontDetails
-                  label="Elements"
-                  items={font.elements}
-                  isVisible={elementsOpen[index]?.elements || false}
-                  onToggle={() => toggleSection(index, "elements")}
-                />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: 8,
+              }}
+            >
+              <div>
+                <Text type="secondary" style={{ display: "block" }}>
+                  {font.usage}
+                </Text>
+                <Text strong style={{ fontSize: "18px" }}>
+                  {font.name}
+                </Text>
+              </div>
+              {/* Highlight/Remove button */}
+              <div style={{ marginLeft: "auto", textAlign: "right" }}>
+                <Space style={{ marginTop: 4, display: "flex", gap: 8 }}>
+                  {highlightedFont === font.name ? (
+                    <Tooltip title="Remove highlight" placement="top">
+                      <Button
+                        danger
+                        style={{
+                          fontSize: 14,
+                          padding: "6px 12px",
+                          outline: "none",
+                          boxShadow: "none",
+                        }}
+                        onClick={() => {
+                          removeHighlight();
+                          setHighlightedFont(null);
+                        }}
+                        icon={<CloseOutlined />}
+                      />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Highlight font" placement="top">
+                      <Button
+                        style={{
+                          fontSize: 14,
+                          padding: "6px 12px",
+                          outline: "none",
+                          boxShadow: "none",
+                          borderRight: `2px solid ${highlightButtonColor}`,
+                        }}
+                        type="default"
+                        onClick={() => {
+                          highlightFont(font.name);
+                          setHighlightedFont(font.name);
+                        }}
+                        icon={<FaHighlighter />}
+                      />
+                    </Tooltip>
+                  )}
+                </Space>
               </div>
             </div>
+            <FontDetails
+              label="Weights"
+              items={font.weight}
+              isVisible={elementsOpen[index]?.weights || false}
+              onToggle={() => toggleSection(index, "weights")}
+            />
+            <FontDetails
+              label="Sizes"
+              items={font.sizes}
+              isVisible={elementsOpen[index]?.sizes || false}
+              onToggle={() => toggleSection(index, "sizes")}
+            />
+            <FontDetails
+              label="Elements"
+              items={font.elements}
+              isVisible={elementsOpen[index]?.elements || false}
+              onToggle={() => toggleSection(index, "elements")}
+            />
           </Card>
         ))}
       </div>

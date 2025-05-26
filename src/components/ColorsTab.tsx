@@ -108,7 +108,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
         chrome.tabs.sendMessage(tabs[0].id, {
           action: "highlightColor",
           color,
-          highlightColor: storedHighlightColor || "yellow",
+          highlightColor: storedHighlightColor || DEFAULTS.HIGHLIGHT_COLOR,
         });
       }
     });

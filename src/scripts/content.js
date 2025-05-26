@@ -22,6 +22,13 @@
         { behavior: "smooth", block: "center" },
         message.highlightColor || "yellow"
       );
+    } else if (message.action === "highlightFont") {
+      highlightFont(
+        message.font,
+        true,
+        { behavior: "smooth", block: "center" },
+        message.highlightColor || "yellow"
+      );
     } else if (message.action === "removeHighlight") {
       removeHighlight();
     }
@@ -181,6 +188,50 @@
     });
   }
 
+  function highlightFont(
+    fontName,
+    enableScroll = true,
+    scrollBehavior = { behavior: "smooth", block: "center" },
+    highlightColor = "yellow"
+  ) {
+    removeHighlight();
+
+    const elements = [...document.querySelectorAll("*")];
+    let firstMatchScrolled = false;
+
+    elements.forEach((el) => {
+      if (!el.textContent.trim()) return;
+
+      const style = getComputedStyle(el);
+      const tagName = el.tagName.toLowerCase();
+      const elementFontFamily = normalizeFontFamily(style.fontFamily);
+
+      if (
+        elementFontFamily === fontName &&
+        tagName !== "html" &&
+        tagName !== "body"
+      ) {
+        el.dataset.originalColor = el.style.color || "";
+        el.dataset.originalBackgroundColor = el.style.backgroundColor || "";
+        el.dataset.originalOutline = el.style.outline || "";
+        el.dataset.originalBoxShadow = el.style.boxShadow || "";
+        el.dataset.originalAnimation = el.style.animation || "";
+        el.dataset.originalBorder = el.style.border || "";
+        el.dataset.originalBorderColor = el.style.borderColor || "";
+        el.dataset.originalTextShadow = el.style.textShadow || "";
+
+        el.style.setProperty("color", highlightColor, "important");
+       
+        el.setAttribute("data-highlighted", "true");
+
+        if (enableScroll && !firstMatchScrolled) {
+          el.scrollIntoView(scrollBehavior);
+          firstMatchScrolled = true;
+        }
+      }
+    });
+  }
+
   function removeHighlight() {
     const highlightedElements = document.querySelectorAll(
       "[data-highlighted='true']"
@@ -220,6 +271,8 @@
       }
       el.removeAttribute("data-highlighted");
       el.style.removeProperty("--pulse-color");
+
+      el.style.removeProperty("outline-offset");
     });
   }
 })();

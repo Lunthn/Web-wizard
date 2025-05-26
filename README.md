@@ -3,7 +3,7 @@
 # Web Wizard
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Version](https://img.shields.io/badge/Version-1.0-blue.svg)
+![Version](https://img.shields.io/badge/Version-1.1-blue.svg)
 [![Chrome Web Store](https://img.shields.io/badge/Chrome-Web%20Store-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/web-wizard/ggflldlhnfejonaclfmfmhnpgliijicn)
 [![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-FF7139?logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/webwizard/)
 
