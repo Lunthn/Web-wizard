@@ -22,6 +22,13 @@
         { behavior: "smooth", block: "center" },
         message.highlightColor || "yellow"
       );
+    } else if (message.action === "highlightFont") {
+      highlightFont(
+        message.font,
+        true,
+        { behavior: "smooth", block: "center" },
+        message.highlightColor || "yellow"
+      );
     } else if (message.action === "removeHighlight") {
       removeHighlight();
     }
@@ -141,7 +148,8 @@
       const style = getComputedStyle(el);
       const tagName = el.tagName.toLowerCase();
       const colorMatch = style.color === color;
-      const bgMatch = style.backgroundColor === color;
+      const bgMatch =
+        style.backgroundColor === color || style.background === color;
       const borderMatch = style.borderColor === color;
       if (
         (colorMatch || bgMatch || borderMatch) &&
@@ -149,41 +157,73 @@
         tagName !== "body"
       ) {
         el.dataset.originalColor = el.style.color || "";
+        el.dataset.originalBackgroundColor = el.style.backgroundColor || "";
         el.dataset.originalOutline = el.style.outline || "";
         el.dataset.originalBoxShadow = el.style.boxShadow || "";
         el.dataset.originalAnimation = el.style.animation || "";
         el.dataset.originalBorder = el.style.border || "";
+        el.dataset.originalBorderColor = el.style.borderColor || "";
         el.dataset.originalTextShadow = el.style.textShadow || "";
+
         if (colorMatch) {
           el.style.setProperty("color", highlightColor, "important");
-          el.style.setProperty(
-            "text-shadow",
-            `0 0 10px ${highlightColor}`,
-            "important"
-          );
+        } else if (bgMatch) {
+          el.style.setProperty("background-color", highlightColor, "important");
+        } else if (borderMatch) {
+          el.style.setProperty("border-color", highlightColor, "important");
         } else {
-          if (bgMatch) {
-            el.style.setProperty(
-              "outline",
-              `3px solid ${highlightColor}`,
-              "important"
-            );
-          }
-          if (borderMatch) {
-            el.style.setProperty(
-              "border",
-              `3px solid ${highlightColor}`,
-              "important"
-            );
-          }
-          el.style.setProperty("--pulse-color", highlightColor);
           el.style.setProperty(
-            "box-shadow",
-            `0 0 15px ${highlightColor}`,
+            "background-color",
+            "2px solid " + highlightColor,
             "important"
           );
         }
+
         el.setAttribute("data-highlighted", "true");
+        if (enableScroll && !firstMatchScrolled) {
+          el.scrollIntoView(scrollBehavior);
+          firstMatchScrolled = true;
+        }
+      }
+    });
+  }
+
+  function highlightFont(
+    fontName,
+    enableScroll = true,
+    scrollBehavior = { behavior: "smooth", block: "center" },
+    highlightColor = "yellow"
+  ) {
+    removeHighlight();
+
+    const elements = [...document.querySelectorAll("*")];
+    let firstMatchScrolled = false;
+
+    elements.forEach((el) => {
+      if (!el.textContent.trim()) return;
+
+      const style = getComputedStyle(el);
+      const tagName = el.tagName.toLowerCase();
+      const elementFontFamily = normalizeFontFamily(style.fontFamily);
+
+      if (
+        elementFontFamily === fontName &&
+        tagName !== "html" &&
+        tagName !== "body"
+      ) {
+        el.dataset.originalColor = el.style.color || "";
+        el.dataset.originalBackgroundColor = el.style.backgroundColor || "";
+        el.dataset.originalOutline = el.style.outline || "";
+        el.dataset.originalBoxShadow = el.style.boxShadow || "";
+        el.dataset.originalAnimation = el.style.animation || "";
+        el.dataset.originalBorder = el.style.border || "";
+        el.dataset.originalBorderColor = el.style.borderColor || "";
+        el.dataset.originalTextShadow = el.style.textShadow || "";
+
+        el.style.setProperty("color", highlightColor, "important");
+       
+        el.setAttribute("data-highlighted", "true");
+
         if (enableScroll && !firstMatchScrolled) {
           el.scrollIntoView(scrollBehavior);
           firstMatchScrolled = true;
@@ -201,6 +241,10 @@
         el.style.color = el.dataset.originalColor;
         delete el.dataset.originalColor;
       }
+      if (el.dataset.originalBackgroundColor !== undefined) {
+        el.style.backgroundColor = el.dataset.originalBackgroundColor;
+        delete el.dataset.originalBackgroundColor;
+      }
       if (el.dataset.originalOutline !== undefined) {
         el.style.outline = el.dataset.originalOutline;
         delete el.dataset.originalOutline;
@@ -217,12 +261,18 @@
         el.style.border = el.dataset.originalBorder;
         delete el.dataset.originalBorder;
       }
+      if (el.dataset.originalBorderColor !== undefined) {
+        el.style.borderColor = el.dataset.originalBorderColor;
+        delete el.dataset.originalBorderColor;
+      }
       if (el.dataset.originalTextShadow !== undefined) {
         el.style.textShadow = el.dataset.originalTextShadow;
         delete el.dataset.originalTextShadow;
       }
       el.removeAttribute("data-highlighted");
       el.style.removeProperty("--pulse-color");
+
+      el.style.removeProperty("outline-offset");
     });
   }
 })();

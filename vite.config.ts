@@ -26,33 +26,19 @@ const generateManifestPlugin = (): Plugin => {
   };
 };
 
-const modifyIndexHtmlPlugin = (): Plugin => {
-  return {
-    name: "modify-index-html",
-    apply: "build",
-    transformIndexHtml(html) {
-      const { MANIFEST_DATA } = require("./src/data/index");
-      return html
-        .replace(/<title>.*<\/title>/, `<title>${MANIFEST_DATA.name}</title>`)
-        .replace(
-          /<meta name="description" content=".*">/,
-          `<meta name="description" content="${
-            MANIFEST_DATA.description ?? ""
-          }">`
-        );
-    },
-  };
-};
 
 export default defineConfig({
   plugins: [
     generateManifestPlugin(),
-    modifyIndexHtmlPlugin(),
     react(),
     viteStaticCopy({
       targets: [
         {
           src: "src/scripts/content.js",
+          dest: "",
+        },
+        {
+          src: "src/scripts/background.js",
           dest: "",
         },
       ],

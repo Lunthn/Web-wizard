@@ -28,9 +28,8 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
   const [highlightColor, setHighlightColorState] = useState<string>(
     DEFAULTS.HIGHLIGHT_COLOR
   );
-  const [hideNotes, setHideNotesState] = useState<boolean>(false);
+  const [hideNotes, setHideNotesState] = useState<boolean>(DEFAULTS.HIDE_NOTES);
 
-  // Load saved settings on mount
   useEffect(() => {
     getFormat().then((savedFormat) =>
       setSelectedFormat(savedFormat || DEFAULTS.FORMAT)
@@ -38,10 +37,9 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
     getHighlightColor().then((savedColor) =>
       setHighlightColorState(savedColor || DEFAULTS.HIGHLIGHT_COLOR)
     );
-    getHideNotes().then((saved) => setHideNotesState(saved ?? false));
+    getHideNotes().then((saved) => setHideNotesState(saved ?? DEFAULTS.HIDE_NOTES));
   }, []);
 
-  // Handlers
   const handleDarkModeToggle = (checked: boolean) => {
     setDarkMode(checked);
     setTheme(checked ? "dark" : "light");
@@ -83,7 +81,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
     setHideNotesState(DEFAULTS.HIDE_NOTES);
     setTheme(DEFAULTS.THEME);
     window.dispatchEvent(
-      new StorageEvent("storage", { key: "reset", newValue: "true" })
+      new StorageEvent("storage", { key: "resetSettings", newValue: "true" })
     );
   };
 
@@ -116,8 +114,10 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode }) => {
     >
       <Text>Highlight Color</Text>
       <ColorPicker
+        showText
+        disabledAlpha
         value={highlightColor}
-        onChange={handleHighlightColorChange}
+        onChangeComplete={handleHighlightColorChange}
       />
     </Space>
   );

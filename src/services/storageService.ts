@@ -18,6 +18,7 @@ export function restoreDefaults(): void {
   localStorage.removeItem(STORAGE_KEYS.THEME);
   localStorage.removeItem(STORAGE_KEYS.FORMAT);
   localStorage.removeItem(STORAGE_KEYS.HIGHLIGHT_COLOR);
+  localStorage.removeItem(STORAGE_KEYS.HIDE_NOTES);
 }
 
 export const getTheme = async (): Promise<"dark" | "light"> => {

@@ -7,7 +7,12 @@ import {
   DEFAULTS,
 } from "../services/storageService";
 import { rgbToHex, rgbToHsl } from "../utils";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  LeftOutlined,
+  DownOutlined,
+} from "@ant-design/icons";
 import { FaHighlighter } from "react-icons/fa6";
 import { IoCopy } from "react-icons/io5";
 
@@ -27,25 +32,55 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
   const [highlightedColor, setHighlightedColor] = useState<string | null>(null);
   const [format, setFormat] = useState<string>(DEFAULTS.FORMAT);
-  const [hideNotes, setHideNotesState] = useState<boolean>(false);
+  const [hideNotes, setHideNotesState] = useState<boolean>(DEFAULTS.HIDE_NOTES);
+  const [elementsOpen, setElementsOpen] = useState<Record<number, boolean>>({});
+  const [highlightButtonColor, setHighlightButtonColor] =
+    useState<string>("transparent");
 
   useEffect(() => {
     getFormat().then((savedFormat: string) => {
       setFormat(savedFormat || DEFAULTS.FORMAT);
     });
     getHideNotes().then((savedHideNotes) => {
-      setHideNotesState(savedHideNotes ?? false);
+      setHideNotesState(savedHideNotes ?? DEFAULTS.HIDE_NOTES);
     });
+    getHighlightColor().then((color) => {
+      setHighlightButtonColor(color || "transparent");
+    });
+
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "hideNotes") {
+      if (event.key === "hideNotes" || event.key === "resetSettings") {
         getHideNotes().then((savedHideNotes) => {
-          setHideNotesState(savedHideNotes ?? false);
+          setHideNotesState(savedHideNotes ?? DEFAULTS.HIDE_NOTES);
+        });
+      }
+      if (event.key === "format" || event.key === "resetSettings") {
+        getFormat().then((savedFormat: string) => {
+          setFormat(savedFormat || DEFAULTS.FORMAT);
+        });
+      }
+      if (event.key === "highlightColor" || event.key === "resetSettings") {
+        getHighlightColor().then((color) => {
+          setHighlightButtonColor(color || DEFAULTS.HIGHLIGHT_COLOR);
         });
       }
     };
+
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  useEffect(() => {
+    setElementsOpen((prev) => {
+      const newState: Record<number, boolean> = { ...prev };
+      colorData.forEach((_, idx) => {
+        if (prev[idx] === undefined) {
+          newState[idx] = false;
+        }
+      });
+      return newState;
+    });
+  }, [colorData]);
 
   const formatColor = (rgb: string): string => {
     switch (format) {
@@ -73,7 +108,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
         chrome.tabs.sendMessage(tabs[0].id, {
           action: "highlightColor",
           color,
-          highlightColor: storedHighlightColor || "yellow",
+          highlightColor: storedHighlightColor || DEFAULTS.HIGHLIGHT_COLOR,
         });
       }
     });
@@ -87,8 +122,17 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
     });
   };
 
+  const toggleElements = (index: number) => {
+    setElementsOpen((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
   const renderColorCard = (color: ColorItem, index: number) => {
     const formattedColor = formatColor(color.color);
+    const showElements = elementsOpen[index];
+
     return (
       <Card
         key={index}
@@ -171,6 +215,7 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
                         padding: "6px 12px",
                         outline: "none",
                         boxShadow: "none",
+                        borderRight: `2px solid ${highlightButtonColor}`,
                       }}
                       type="default"
                       onClick={() => {
@@ -185,17 +230,29 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
             </div>
           </div>
           <div>
-            <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
-              Elements:
-            </Text>
-            <Space size={[0, 4]} wrap style={{ marginTop: 4 }}>
-              {color.elements &&
-                color.elements.map((element, i) => (
+            <Space style={{ display: "flex", justifyContent: "space-between" }}>
+              <Text type="secondary" style={{ display: "block", marginTop: 4 }}>
+                Elements:
+              </Text>
+              <Button
+                size="small"
+                type="link"
+                style={{ padding: 0, marginLeft: 4 }}
+                onClick={() => toggleElements(index)}
+                aria-label={showElements ? "Hide elements" : "Show elements"}
+              >
+                {showElements ? <DownOutlined /> : <LeftOutlined />}
+              </Button>
+            </Space>
+            {showElements && (
+              <Space size={[0, 4]} wrap style={{ marginTop: 4 }}>
+                {color.elements?.map((element, i) => (
                   <Tag key={i} color="default">
                     {element}
                   </Tag>
                 ))}
-            </Space>
+              </Space>
+            )}
           </div>
         </div>
       </Card>
