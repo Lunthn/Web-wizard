@@ -9,6 +9,7 @@
           fonts,
           url: window.location.href,
           title: document.title,
+          favicon: document.querySelector("link[rel='icon']")?.href || "",
         });
         return true;
       } catch (error) {
