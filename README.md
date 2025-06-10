@@ -3,9 +3,8 @@
 # Web Wizard
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Version](https://img.shields.io/badge/Version-1.1-blue.svg)
+![Version](https://img.shields.io/badge/Version-1.2-blue.svg)
 [![Chrome Web Store](https://img.shields.io/badge/Chrome-Web%20Store-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/web-wizard/ggflldlhnfejonaclfmfmhnpgliijicn)
-[![Firefox Add-ons](https://img.shields.io/badge/Firefox-Add--ons-FF7139?logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/en-US/firefox/addon/webwizard/)
 
 <p>
   <b>Analyze website designs – instantly reveal color palettes and typography choices with a single click.<br>
@@ -13,8 +12,10 @@
 </p>
 
 ## Features
+
 - 🎨 &nbsp;**Scan used colors & fonts**, _Instantly see all colors and fonts used on the current page._
 - ✨ &nbsp;**Highlight a found color on webpage**, _Visually highlight any detected color directly on the page._
+- 🟢 &nbsp;**Pick any color from the page**, _Use the color picker tool to select and copy any color visible on the website._
 - 🔠 **Highlight fonts**, Visually emphasize fonts used on the page for quick identification.
 - 📋 &nbsp;**Copy a color**, _Copy any color value in your preferred format (HEX, RGB, HSL) with one click._
 - 🔄 &nbsp;**Change format of found colors**, _Switch between HEX, RGB, and HSL formats for easy copying._
@@ -25,11 +26,10 @@
 - 🧩 **Collapse elements tab**, Easily hide or show the elements panel to declutter your view.
 
 ## Screenshots
+
 ![Screenshot](screenshots/colors-preview.png)
 ![Screenshot](screenshots/fonts-preview.png)
 ![Screenshot](screenshots/settings-preview.png)
-
-
 
 ## Installation
 
@@ -49,4 +49,3 @@
 ## Support
 
 If you find this project helpful, you can [buy me a coffee](https://buymeacoffee.com/lunthn) to support ongoing development!
-

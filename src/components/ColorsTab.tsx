@@ -1,5 +1,7 @@
 import { Card, Tag, Typography, Space, Button, Tooltip } from "antd";
 import React, { useState, useEffect } from "react";
+import { MdColorLens } from "react-icons/md";
+import { TbColorPicker } from "react-icons/tb";
 import {
   getFormat,
   getHighlightColor,
@@ -36,6 +38,8 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
   const [elementsOpen, setElementsOpen] = useState<Record<number, boolean>>({});
   const [highlightButtonColor, setHighlightButtonColor] =
     useState<string>("transparent");
+  const [isPickerActive, setIsPickerActive] = useState(false);
+  const [pickedColor, setPickedColor] = useState<string | null>(null);
 
   useEffect(() => {
     getFormat().then((savedFormat: string) => {
@@ -129,6 +133,25 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
     }));
   };
 
+  const handleColorPicker = async () => {
+    if ("EyeDropper" in window) {
+      try {
+        setIsPickerActive(true);
+        const eyeDropper = new (window as any).EyeDropper();
+        const result = await eyeDropper.open();
+        setPickedColor(result.sRGBHex);
+      } catch (error) {
+        console.error("Color picking was cancelled or failed:", error);
+      } finally {
+        setIsPickerActive(false);
+      }
+    } else {
+      alert(
+        "Color picker not supported in this browser. Please use Chrome 95+ or Edge 95+"
+      );
+    }
+  };
+
   const renderColorCard = (color: ColorItem, index: number) => {
     const formattedColor = formatColor(color.color);
     const showElements = elementsOpen[index];
@@ -215,14 +238,19 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
                         padding: "6px 12px",
                         outline: "none",
                         boxShadow: "none",
-                        borderRight: `2px solid ${highlightButtonColor}`,
                       }}
                       type="default"
                       onClick={() => {
                         highlightColor(color.color);
                         setHighlightedColor(color.color);
                       }}
-                      icon={<FaHighlighter />}
+                      icon={
+                        <FaHighlighter
+                          style={{
+                            color: highlightButtonColor,
+                          }}
+                        />
+                      }
                     />
                   </Tooltip>
                 )}
@@ -272,6 +300,100 @@ const ColorsTab: React.FC<ColorsTabProps> = ({ colorData }) => {
             due to page structure or styles.
           </Text>
         )}
+        <Card
+          size="small"
+          style={{
+            marginBottom: 16,
+            border: "1px solid #ddd",
+            background: "#fff",
+            borderRadius: 6,
+            boxShadow: "none",
+          }}
+          bodyStyle={{
+            padding: 12,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            <div
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 6,
+                background: pickedColor || "transparent",
+                border: "1px solid #ddd",
+                marginRight: 12,
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 22,
+              }}
+            >
+              {!pickedColor && <MdColorLens />}
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <Text type="secondary" style={{ display: "block" }}>
+                Color picker
+              </Text>
+              <Text strong style={{ fontSize: "18px", wordBreak: "break-all" }}>
+                {pickedColor ? formatColor(pickedColor) : "No color picked yet"}
+              </Text>
+            </div>
+          </div>
+          <div
+            style={{ display: "flex", alignItems: "center", marginLeft: 16 }}
+          >
+            {pickedColor && (
+              <Tooltip title="Copy color" placement="top">
+                <Button
+                  style={{
+                    fontSize: 14,
+                    padding: "6px 12px",
+                    outline: "none",
+                    boxShadow: "none",
+                    marginRight: 8,
+                  }}
+                  type={
+                    copiedColor === formatColor(pickedColor)
+                      ? "primary"
+                      : "default"
+                  }
+                  onClick={() => handleCopy(formatColor(pickedColor))}
+                  icon={
+                    copiedColor === formatColor(pickedColor) ? (
+                      <CheckOutlined />
+                    ) : (
+                      <IoCopy />
+                    )
+                  }
+                />
+              </Tooltip>
+            )}
+            <Tooltip title="Color picker mode">
+              <Button
+                type={isPickerActive ? undefined : "default"}
+                loading={isPickerActive}
+                style={{
+                  fontSize: 14,
+                  padding: "6px 12px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                onClick={handleColorPicker}
+                icon={<TbColorPicker style={{ fontSize: "22" }} />}
+              />
+            </Tooltip>
+          </div>
+        </Card>
         {colorData.map((color, index) => renderColorCard(color, index))}
       </div>
     </div>

@@ -222,7 +222,7 @@
         el.dataset.originalTextShadow = el.style.textShadow || "";
 
         el.style.setProperty("color", highlightColor, "important");
-       
+
         el.setAttribute("data-highlighted", "true");
 
         if (enableScroll && !firstMatchScrolled) {

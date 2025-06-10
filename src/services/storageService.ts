@@ -5,6 +5,7 @@ const STORAGE_KEYS = {
   FORMAT: "format",
   HIGHLIGHT_COLOR: "highlightColor",
   HIDE_NOTES: "hideNotes",
+  COLOR_PICKED: "pickedColor",
 };
 
 export const DEFAULTS = {
@@ -72,7 +73,9 @@ export const getHighlightColor = async (): Promise<string> => {
 
 export const getHideNotes = async (): Promise<boolean> => {
   return new Promise((resolve) => {
-    const savedHideNotes = localStorage.getItem("hideNotes") as string;
+    const savedHideNotes = localStorage.getItem(
+      STORAGE_KEYS.HIDE_NOTES
+    ) as string;
     if (savedHideNotes) {
       resolve(savedHideNotes === "true");
     } else {
@@ -82,5 +85,5 @@ export const getHideNotes = async (): Promise<boolean> => {
 };
 
 export const setHideNotes = (hideNotes: boolean): void => {
-  localStorage.setItem("hideNotes", String(hideNotes));
+  localStorage.setItem(STORAGE_KEYS.HIDE_NOTES, String(hideNotes));
 };
