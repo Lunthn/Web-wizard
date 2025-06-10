@@ -29,6 +29,7 @@ type TabData = {
   }[];
   url: string;
   title: string;
+  favicon?: string;
 };
 
 const { Title, Text } = Typography;
@@ -44,6 +45,7 @@ const Popup = () => {
     fonts: [],
     url: "",
     title: "",
+    favicon: "",
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -97,6 +99,7 @@ const Popup = () => {
         fonts: result.fonts,
         url: result.url || "",
         title: result.title || "",
+        favicon: result.favicon || "",
       });
       setLoading(false);
     } catch (err) {
@@ -249,9 +252,21 @@ const Popup = () => {
               onClick={handleRetry}
             />
           </div>
-          <Text type="secondary" style={{ fontSize: 12 }}>
-            {data.title || "Untitled Page"}
-          </Text>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {data.favicon && (
+              <img
+                src={data.favicon}
+                alt="Favicon"
+                style={{
+                  width: 16,
+                  height: 16,
+                }}
+              />
+            )}
+            <Text type="secondary" style={{ fontSize: 12 }}>
+              {data.title || "Untitled Page"}
+            </Text>
+          </div>
           <Text type="secondary" style={{ fontSize: 12, display: "block" }}>
             {data.url || "No URL available"}
           </Text>

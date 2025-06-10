@@ -196,14 +196,17 @@ const FontsTab: React.FC<FontsTabProps> = ({ fontData }) => {
                           padding: "6px 12px",
                           outline: "none",
                           boxShadow: "none",
-                          borderRight: `2px solid ${highlightButtonColor}`,
                         }}
                         type="default"
                         onClick={() => {
                           highlightFont(font.name);
                           setHighlightedFont(font.name);
                         }}
-                        icon={<FaHighlighter />}
+                        icon={
+                          <FaHighlighter
+                            style={{ color: highlightButtonColor }}
+                          />
+                        }
                       />
                     </Tooltip>
                   )}

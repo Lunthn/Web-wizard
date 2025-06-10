@@ -1,7 +1,7 @@
 export const MANIFEST_DATA = {
   manifest_version: 3,
   name: "Web Wizard",
-  version: "1.1",
+  version: "1.2",
   description:
     "Analyze website designs - instantly reveal color palettes and typography choices with a single click.",
   action: {
@@ -40,6 +40,7 @@ export const SOCIAL_LINKS = {
   MAIL: "nr.lupke@gmail.com",
   LINKEDIN: "https://linkedin.com/in/nathanlupke",
   COFFE: "https://buymeacoffee.com/lunthn",
+  
 };
 
 export const DEFAULT_SETTINGS = {

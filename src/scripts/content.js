@@ -9,6 +9,7 @@
           fonts,
           url: window.location.href,
           title: document.title,
+          favicon: document.querySelector("link[rel='icon']")?.href || "",
         });
         return true;
       } catch (error) {
@@ -221,7 +222,7 @@
         el.dataset.originalTextShadow = el.style.textShadow || "";
 
         el.style.setProperty("color", highlightColor, "important");
-       
+
         el.setAttribute("data-highlighted", "true");
 
         if (enableScroll && !firstMatchScrolled) {
